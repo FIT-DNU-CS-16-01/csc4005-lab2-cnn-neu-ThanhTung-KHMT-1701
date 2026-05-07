@@ -1,6 +1,9 @@
 # CSC4005 – Lab 2 Report
 
 ## 1. Thông tin chung
+- Họ và tên: Lưu Thanh Tùng
+- Lớp: KHMT 1701
+- Mã số sinh viên: 1771040029
 - Học phần: CSC4005 – Học sâu
 - Lab: Lab 2 – CNN Image Classification (From Scratch vs Transfer)
 - Repo: `csc4005-lab2-cnn-neu-ThanhTung-KHMT-1701`
@@ -75,6 +78,11 @@ Confusion matrix: [outputs/resnet18_transfer/confusion_matrix.png](outputs/resne
 | Scratches | Inclusion | 2 |
 
 → Cùng quy luật: cả CNN scratch và ResNet18 transfer đều gặp khó với cặp Inclusion ↔ Pitted_Surface; chỉ khi mở băng toàn bộ ResNet18 (finetune) mới giải quyết triệt để.
+
+### Trực quan 5 mẫu dự đoán sai (resnet18_transfer)
+![Misclassified samples](outputs/_summary/04_misclassified_samples.png)
+
+Xem [outputs/_summary/04_misclassified_samples.png](outputs/_summary/04_misclassified_samples.png) — các ảnh đều có texture mờ/đốm gây khó cho mô hình khi backbone bị đóng băng.
 
 ## 7. Kết luận
 
