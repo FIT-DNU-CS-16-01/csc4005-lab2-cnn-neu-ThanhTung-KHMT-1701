@@ -20,6 +20,25 @@ class ConvBlock(nn.Module):
         return self.block(x)
 
 
+class MLP(nn.Module):
+    def __init__(self, num_classes: int, in_channels: int = 1, img_size: int = 64, dropout: float = 0.3):
+        super().__init__()
+        input_dim = in_channels * img_size * img_size
+        self.net = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(input_dim, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(512, 128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(128, num_classes),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
+
+
 class SmallCNN(nn.Module):
     def __init__(self, num_classes: int, in_channels: int = 1, dropout: float = 0.3):
         super().__init__()
@@ -104,7 +123,10 @@ def build_model(
     train_mode: str,
     num_classes: int,
     dropout: float = 0.3,
+    img_size: int = 64,
 ) -> nn.Module:
+    if model_name == 'mlp':
+        return MLP(num_classes=num_classes, in_channels=1, img_size=img_size, dropout=dropout)
     if model_name == 'cnn_small':
         return SmallCNN(num_classes=num_classes, in_channels=1, dropout=dropout)
 

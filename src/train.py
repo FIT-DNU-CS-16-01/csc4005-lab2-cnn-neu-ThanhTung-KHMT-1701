@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--data_dir', type=str, required=True, help='Đường dẫn tới NEU-CLS.zip hoặc thư mục dữ liệu đã giải nén')
     parser.add_argument('--project', type=str, default='csc4005-lab2-neu-cnn')
     parser.add_argument('--run_name', type=str, default='debug_run')
-    parser.add_argument('--model_name', type=str, choices=['cnn_small', 'resnet18', 'mobilenet_v2', 'vgg11_bn'], default='cnn_small')
+    parser.add_argument('--model_name', type=str, choices=['mlp', 'cnn_small', 'resnet18', 'mobilenet_v2', 'vgg11_bn'], default='cnn_small')
     parser.add_argument('--train_mode', type=str, choices=['scratch', 'transfer', 'finetune'], default='scratch')
     parser.add_argument('--optimizer', type=str, choices=['adamw', 'sgd'], default='adamw')
     parser.add_argument('--scheduler', type=str, choices=['none', 'plateau'], default='plateau')
@@ -57,9 +57,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
-    if args.model_name == 'cnn_small' and args.train_mode != 'scratch':
-        raise ValueError('`cnn_small` chỉ dùng với `--train_mode scratch`.')
-    if args.model_name != 'cnn_small' and args.train_mode == 'scratch':
+    scratch_only = {'mlp', 'cnn_small'}
+    if args.model_name in scratch_only and args.train_mode != 'scratch':
+        raise ValueError(f'`{args.model_name}` chỉ dùng với `--train_mode scratch`.')
+    if args.model_name not in scratch_only and args.train_mode == 'scratch':
         raise ValueError('Backbone pretrained phải đi với `--train_mode transfer` hoặc `--train_mode finetune`.')
 
 
@@ -143,6 +144,7 @@ def main() -> None:
         train_mode=args.train_mode,
         num_classes=len(data.class_names),
         dropout=args.dropout,
+        img_size=args.img_size,
     ).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = get_optimizer(args.optimizer, model, args.lr, args.weight_decay)
